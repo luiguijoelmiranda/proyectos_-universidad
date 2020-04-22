@@ -20,17 +20,20 @@ Total = 100
 Ez= np.zeros((Nptos,Nptos), dtype = "float64")# matriz Ez 2D
 Ezp= np.zeros((Nptos,Nptos), dtype = "float64")# matriz Ez 2D
 for n in range(0, Total): # for para el tiempo 
+    # Por último haría esta actualización para el campo
     for i in range (1, (Nptos-1) ):#for para recorrer las matrices de campo magnetico
         for j in range (1, (Nptos-1) ):
-            Hx[i,j] = Hx[i,j] - (dt/(sc.mu_0))*(((Ez[i,j-1] -Ez[i,j+1])/dy))
-            Hy[i,j] = Hy[i,j] + (dt/(sc.mu_0))*(((Ez[i-1,j] -Ez[i+1,j])/dx))
-    for i in range(0, (Nptos-1)):#for para recorrer mariz de campo electrico 
-        for j in range(0, (Nptos-1)):
-            Ez[i,j] = Ez[i,j] + (dt/(sc.epsilon_0))*(((Hy[i+1,j] - Hy[i-1,j])/dx)-((Hx[i,j+1] - Hx[i,j-1])/dy))
+            Hx[i,j] = Hx[i,j] - (dt/(sc.mu_0))*(((Ez[i,j] -Ez[i,j+1])/dy))
+            Hy[i,j] = Hy[i,j] + (dt/(sc.mu_0))*(((Ez[i+1,j] -Ez[i,j])/dx))
+    ## Primero calcularía esta parte del código
+    for i in range(1, (Nptos-1)):#for para recorrer mariz de campo electrico 
+        for j in range(1, (Nptos-1)):
+            Ez[i,j] = Ez[i,j] + (dt/(sc.epsilon_0))*(((Hy[i,j] - Hy[i-1,j])/dx)-((Hx[i,j] - Hx[i,j-1])/dy))
             
     Hyp = Hy             
     Hxp = Hx
     Ezp = Ez
+    # Luego asignaría esta parte del código
     Ez[pc,pc] = E0*exp((-(n - 8.0)**2)/16.0)# pulso gausina
     #diferentes tipos de plotear
     x0 =(np.linspace(-50,50, num = Nptos))*dx
